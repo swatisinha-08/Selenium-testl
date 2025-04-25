@@ -1,12 +1,23 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import time
 
 def test_google_search():
-    driver = webdriver.Chrome()
+    options = Options()
+    options.add_argument('--headless')  # For Azure DevOps
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+
+    driver = webdriver.Chrome(options=options)
     driver.get("https://www.google.com")
     assert "Google" in driver.title
+
     search_box = driver.find_element(By.NAME, "q")
     search_box.send_keys("Azure DevOps Selenium")
     search_box.submit()
+
+    time.sleep(2)  # Let the results load (simplified wait)
+
     assert "Azure DevOps Selenium" in driver.page_source
     driver.quit()
